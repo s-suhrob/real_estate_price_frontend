@@ -40,6 +40,12 @@ export interface FeedbackInput {
     prediction_id: string;
     rating: number; // 1-5
     comment?: string | null;
+    nonce: string; // Required: one-time challenge token from /challenge endpoint
+}
+
+export interface ChallengeResponse {
+    nonce: string;
+    expires_at: string;
 }
 
 export interface ApiError {
