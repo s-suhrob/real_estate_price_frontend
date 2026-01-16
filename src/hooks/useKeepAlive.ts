@@ -23,9 +23,9 @@ const REQUEST_TIMEOUT = 8 * 1000; // 8 seconds
 function getBackendUrl(): string {
     if (typeof window !== 'undefined') {
         // Client-side: check for Next.js public env var
-        return process.env.NEXT_PUBLIC_API_URL || 'https://real-estate-price-backend-1.onrender.com';
+        return process.env.NEXT_PUBLIC_API_URL || 'https://real-estate-price-backend.onrender.com';
     }
-    return 'https://real-estate-price-backend-1.onrender.com';
+    return 'https://real-estate-price-backend.onrender.com';
 }
 
 /**

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://real-estate-price-backend-1.onrender.com/api/v1",
+    baseURL: "https://real-estate-price-backend.onrender.com/api/v1",
     headers: {
         "Content-Type": "application/json",
     },
