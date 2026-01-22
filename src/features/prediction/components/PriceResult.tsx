@@ -1,18 +1,11 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState, useEffect } from "react";
 import { PredictionResponse } from "@/types/api";
 import { DisclaimerShort } from "@/components/disclaimer";
-import { ResultActions } from "./ResultActions";
 import { LightweightFeedback } from "@/features/feedback/components/LightweightFeedback";
-import { Separator } from "@/components/ui/separator";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { ChevronDown, Calculator } from "lucide-react";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 interface PriceResultProps {
     prediction: PredictionResponse;
@@ -20,8 +13,38 @@ interface PriceResultProps {
     onReset: () => void;
 }
 
+// Counter animation hook
+function useCountUp(target: number, duration: number = 1500): number {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        const startTime = Date.now();
+        const startValue = 0;
+
+        const updateCount = () => {
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Easing function (ease-out)
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const currentValue = Math.round(startValue + (target - startValue) * easeOut);
+
+            setCount(currentValue);
+
+            if (progress < 1) {
+                requestAnimationFrame(updateCount);
+            }
+        };
+
+        requestAnimationFrame(updateCount);
+    }, [target, duration]);
+
+    return count;
+}
+
 export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
-    const [techInfoOpen, setTechInfoOpen] = useState(false);
+    const animatedPrice = useCountUp(prediction.price, 1500);
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat("ru-RU", {
@@ -30,82 +53,75 @@ export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
     };
 
     const pricePerSqm = area > 0 ? Math.round(prediction.price / area) : 0;
-    const rangePercentage = Math.max(0, Math.min(100,
-        ((prediction.price - prediction.range_low) / (prediction.range_high - prediction.range_low)) * 100
-    ));
 
     return (
-        <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20 shadow-2xl overflow-hidden mt-8">
-            <CardHeader className="bg-primary text-primary-foreground">
-                <CardTitle className="text-xl text-center">Результат оценки</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-8 space-y-6">
-                {/* Main Price */}
-                <div className="text-center">
-                    <p className="text-sm font-medium text-muted-foreground mb-1">
-                        Оценочная рыночная стоимость
-                    </p>
-                    <h2 className="text-5xl font-extrabold text-primary animate-in fade-in zoom-in duration-500">
-                        {formatPrice(prediction.price)} <span className="text-2xl">TJS</span>
+        <div className="w-full max-w-2xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-8 md:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <p className="text-slate-500 mb-2">Оценочная стоимость</p>
+                    <h2 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900">
+                        {formatPrice(animatedPrice)}
+                        <span className="text-2xl md:text-3xl font-semibold text-slate-400 ml-2">TJS</span>
                     </h2>
-                </div>
-
-                {/* Price per m² */}
-                <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                    <Calculator className="w-4 h-4" />
-                    <span className="text-sm">
-                        Цена за м²: <strong className="text-foreground">{formatPrice(pricePerSqm)} TJS</strong>
-                    </span>
-                </div>
-
-                <Separator />
-
-                {/* Confidence Range */}
-                <div className="space-y-3 px-4">
-                    <div className="flex justify-between text-sm font-medium">
-                        <span>{formatPrice(prediction.range_low)} TJS</span>
-                        <span>{formatPrice(prediction.range_high)} TJS</span>
-                    </div>
-                    <div className="relative h-3 bg-secondary/50 rounded-full overflow-hidden">
-                        <div
-                            className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20"
-                        />
-                        <div
-                            className="absolute top-0 bottom-0 w-3 h-3 bg-primary rounded-full shadow-lg transition-all duration-1000 ease-out"
-                            style={{ left: `calc(${rangePercentage}% - 6px)` }}
-                        />
-                    </div>
-                    <p className="text-center text-xs text-muted-foreground">
-                        Ожидаемый диапазон рыночной цены
+                    <p className="text-slate-500 mt-3">
+                        {formatPrice(pricePerSqm)} TJS за м²
                     </p>
                 </div>
 
-                <DisclaimerShort />
+                {/* Price Range Cards */}
+                <div className="grid grid-cols-3 gap-3 mb-8">
+                    {/* Min Card */}
+                    <div className="bg-slate-50 rounded-xl p-4 text-center">
+                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">от</p>
+                        <p className="text-lg md:text-xl font-bold text-slate-700">
+                            {formatPrice(prediction.range_low)}
+                        </p>
+                        <p className="text-xs text-slate-400">TJS</p>
+                    </div>
 
-                {/* Action buttons */}
-                <ResultActions prediction={prediction} area={area} onReset={onReset} />
+                    {/* Main Price Card */}
+                    <div className="bg-slate-900 rounded-xl p-4 text-center transform scale-105 shadow-lg">
+                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">оценка</p>
+                        <p className="text-lg md:text-xl font-bold text-white">
+                            {formatPrice(prediction.price)}
+                        </p>
+                        <p className="text-xs text-slate-400">TJS</p>
+                    </div>
 
-                <Separator />
+                    {/* Max Card */}
+                    <div className="bg-slate-50 rounded-xl p-4 text-center">
+                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">до</p>
+                        <p className="text-lg md:text-xl font-bold text-slate-700">
+                            {formatPrice(prediction.range_high)}
+                        </p>
+                        <p className="text-xs text-slate-400">TJS</p>
+                    </div>
+                </div>
 
-                {/* Lightweight Feedback */}
+                {/* Disclaimer */}
+                <div className="mb-6">
+                    <DisclaimerShort />
+                </div>
+
+                {/* New Calculation Button */}
+                <Button
+                    onClick={onReset}
+                    variant="outline"
+                    className="w-full h-12 text-base font-medium"
+                >
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Новый расчёт
+                </Button>
+
+                {/* Feedback */}
                 {prediction.prediction_id && (
-                    <LightweightFeedback prediction_id={prediction.prediction_id} />
+                    <div className="mt-6 pt-6 border-t border-slate-100">
+                        <LightweightFeedback prediction_id={prediction.prediction_id} />
+                    </div>
                 )}
-
-                {/* Technical Info (Collapsible) */}
-                {prediction.prediction_id && (
-                    <Collapsible open={techInfoOpen} onOpenChange={setTechInfoOpen}>
-                        <CollapsibleTrigger className="flex items-center justify-center gap-1 text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors w-full py-2">
-                            <span>Техническая информация</span>
-                            <ChevronDown className={`w-3 h-3 transition-transform ${techInfoOpen ? "rotate-180" : ""}`} />
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="text-center text-xs text-muted-foreground/50 pt-1 animate-in slide-in-from-top-2">
-                            <p>ID: {prediction.prediction_id}</p>
-                            {prediction.currency && <p>Валюта: {prediction.currency}</p>}
-                        </CollapsibleContent>
-                    </Collapsible>
-                )}
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }

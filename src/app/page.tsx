@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { PredictionForm } from "@/features/prediction/components/PredictionForm";
 import { PriceResult } from "@/features/prediction/components/PriceResult";
 import { PredictionResponse } from "@/types/api";
-import { TrendingUp, MapPin, Target, Database } from "lucide-react";
+import { TrendingUp, MapPin, Target, Database, ArrowDown, Building, Users, CheckCircle } from "lucide-react";
 import { DisclaimerExpanded } from "@/components/disclaimer";
+import { TypeWriter } from "@/components/TypeWriter";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
   const [area, setArea] = useState<number>(0);
+  const [showForm, setShowForm] = useState(false);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const handleSuccess = (data: PredictionResponse, areaValue: number) => {
     setPrediction(data);
@@ -22,28 +26,84 @@ export default function Home() {
   const handleReset = () => {
     setPrediction(null);
     setArea(0);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    formRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const scrollToForm = () => {
+    setShowForm(true);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   return (
     <main className="min-h-screen bg-[#f8fafc]">
-      {/* Hero Section */}
-      <section className="relative py-20 px-6 overflow-hidden">
+      {/* Hero Section with Animation */}
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center py-20 px-6 overflow-hidden">
+        {/* Animated Background */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 -left-4 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 -right-4 w-72 h-72 bg-secondary/10 rounded-full blur-3xl" />
+          <div className="absolute top-20 left-10 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-full blur-3xl" />
         </div>
 
-        <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-slate-900 mb-6">
-              Оценка недвижимости <span className="text-primary">Душанбе</span>
-            </h1>
-            <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto">
-              Ориентировочная оценка рыночной стоимости квартир на основе данных объявлений и модели машинного обучения.
-            </p>
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
+          {/* Main Heading with TypeWriter */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 mb-6">
+            <span className="block mb-2">Оценка недвижимости</span>
+            <TypeWriter
+              words={["Таджикистана", "Душанбе", "Худжанда", "Куляба", "Бохтара"]}
+              className="text-primary"
+              typingSpeed={80}
+              deletingSpeed={40}
+              pauseDuration={2500}
+            />
+          </h1>
+
+          <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-12 animate-fade-in">
+            Узнайте рыночную стоимость квартиры за секунды с помощью искусственного интеллекта
+          </p>
+
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-6 max-w-xl mx-auto mb-12">
+            <div className="text-center animate-fade-in" style={{ animationDelay: "0.2s" }}>
+              <div className="flex items-center justify-center mb-2">
+                <Building className="w-6 h-6 text-primary" />
+              </div>
+              <div className="text-2xl md:text-3xl font-bold text-slate-900">5000+</div>
+              <div className="text-sm text-slate-500">объявлений</div>
+            </div>
+            <div className="text-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
+              <div className="flex items-center justify-center mb-2">
+                <CheckCircle className="w-6 h-6 text-primary" />
+              </div>
+              <div className="text-2xl md:text-3xl font-bold text-slate-900">90%</div>
+              <div className="text-sm text-slate-500">точность</div>
+            </div>
+            <div className="text-center animate-fade-in" style={{ animationDelay: "0.6s" }}>
+              <div className="flex items-center justify-center mb-2">
+                <Users className="w-6 h-6 text-primary" />
+              </div>
+              <div className="text-2xl md:text-3xl font-bold text-slate-900">6</div>
+              <div className="text-sm text-slate-500">городов</div>
+            </div>
           </div>
 
+          {/* CTA Button */}
+          <Button
+            size="lg"
+            onClick={scrollToForm}
+            className="h-14 px-8 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 animate-bounce-subtle"
+          >
+            Получить оценку
+            <ArrowDown className="ml-2 w-5 h-5" />
+          </Button>
+        </div>
+      </section>
+
+      {/* Form Section */}
+      <section ref={formRef} className={`py-16 px-6 transition-opacity duration-500 ${showForm ? 'opacity-100' : 'opacity-100'}`}>
+        <div className="max-w-6xl mx-auto">
           <PredictionForm onSuccess={handleSuccess} />
 
           {prediction && (
@@ -94,7 +154,7 @@ export default function Home() {
       <footer className="py-8 px-6 border-t border-slate-100 bg-white">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-slate-500">
-            © {new Date().getFullYear()} Оценка недвижимости Душанбе
+            © {new Date().getFullYear()} Оценка недвижимости
           </p>
           <a
             href="#methodology"

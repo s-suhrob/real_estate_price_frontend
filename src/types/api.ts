@@ -19,12 +19,19 @@ export type RepairEnum = "new_repair" | "with_repair" | "no_repair";
 export type BuildingStageEnum = "built" | "under_construction";
 
 export interface ApartmentInput {
+    // Core fields (required)
     city: CityEnum;
     area: number;
     building_type: BuildingTypeEnum;
     floor: number;
     repair_type: RepairEnum;
     building_stage: BuildingStageEnum;
+    // Extended fields (optional)
+    rooms?: number | null;
+    total_floors?: number | null;
+    year_built?: number | null;
+    has_balcony?: boolean | null;
+    has_parking?: boolean | null;
 }
 
 export interface PredictionResponse {
