@@ -72,33 +72,37 @@ export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
                     </p>
                 </div>
 
-                {/* Price Range Cards */}
-                <div className="grid grid-cols-3 gap-3 mb-8">
-                    {/* Min Card */}
-                    <div className="bg-slate-50 rounded-xl p-4 text-center">
-                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">{t("result.from")}</p>
-                        <p className="text-lg md:text-xl font-bold text-slate-700">
-                            {formatPrice(prediction.range_low)}
-                        </p>
-                        <p className="text-xs text-slate-400">TJS</p>
-                    </div>
+                {/* Price Range Slider - Unified for all screen sizes */}
+                <div className="mb-8">
+                    {/* Range slider visualization */}
+                    <div className="relative px-2">
+                        {/* Range labels */}
+                        <div className="flex justify-between text-sm md:text-base text-slate-500 mb-2">
+                            <span>{formatPrice(prediction.range_low)} TJS</span>
+                            <span>{formatPrice(prediction.range_high)} TJS</span>
+                        </div>
 
-                    {/* Main Price Card */}
-                    <div className="bg-slate-900 rounded-xl p-4 text-center transform scale-105 shadow-lg">
-                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">{t("result.estimate")}</p>
-                        <p className="text-lg md:text-xl font-bold text-white">
-                            {formatPrice(prediction.price)}
-                        </p>
-                        <p className="text-xs text-slate-400">TJS</p>
-                    </div>
+                        {/* Slider track */}
+                        <div className="relative h-2 md:h-3 bg-slate-200 rounded-full">
+                            {/* Filled portion */}
+                            <div
+                                className="absolute h-full bg-gradient-to-r from-slate-400 to-slate-600 rounded-full"
+                                style={{ width: '100%' }}
+                            />
+                            {/* Marker for estimate */}
+                            <div
+                                className="absolute top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 bg-slate-900 rounded-full border-2 border-white shadow-md"
+                                style={{
+                                    left: `${((prediction.price - prediction.range_low) / (prediction.range_high - prediction.range_low)) * 100}%`,
+                                    transform: 'translate(-50%, -50%)'
+                                }}
+                            />
+                        </div>
 
-                    {/* Max Card */}
-                    <div className="bg-slate-50 rounded-xl p-4 text-center">
-                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">{t("result.to")}</p>
-                        <p className="text-lg md:text-xl font-bold text-slate-700">
-                            {formatPrice(prediction.range_high)}
+                        {/* Range text */}
+                        <p className="text-center text-xs md:text-sm text-slate-400 mt-2">
+                            {t("result.from")} — {t("result.to")}
                         </p>
-                        <p className="text-xs text-slate-400">TJS</p>
                     </div>
                 </div>
 
