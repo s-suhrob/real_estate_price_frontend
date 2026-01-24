@@ -1,8 +1,9 @@
 "use client";
 
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { predictionSchema, PredictionSchema } from "../prediction-schema";
+import { createPredictionSchema, PredictionSchema } from "../prediction-schema";
 import {
     Form,
     FormControl,
@@ -24,39 +25,25 @@ import { usePredictPrice } from "../hooks/use-predict";
 import { PredictionResponse } from "@/types/api";
 import { DisclaimerShort } from "@/components/disclaimer";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useI18n } from "@/i18n";
 
 interface PredictionFormProps {
     onSuccess: (data: PredictionResponse, area: number) => void;
 }
 
-const CITIES = [
-    { value: "dushanbe", label: "Душанбе" },
-    { value: "khujand", label: "Худжанд" },
-    { value: "bokhtar", label: "Бохтар" },
-    { value: "kulob", label: "Куляб" },
-    { value: "hisor", label: "Гиссар" },
-    { value: "vakhdat", label: "Вахдат" },
-];
-
-const BUILDING_TYPES = [
-    { value: "new", label: "Новостройка" },
-    { value: "secondhand", label: "Вторичка" },
-];
-
-const REPAIR_TYPES = [
-    { value: "new_repair", label: "Евроремонт" },
-    { value: "with_repair", label: "Косметический" },
-    { value: "no_repair", label: "Без ремонта" },
-];
-
-const BUILDING_STAGES = [
-    { value: "built", label: "Сдан" },
-    { value: "under_construction", label: "Строится" },
-];
+const CITY_VALUES = ["dushanbe", "khujand", "bokhtar", "kulob", "hisor", "vakhdat"] as const;
+const BUILDING_TYPE_VALUES = ["new", "secondhand"] as const;
+const REPAIR_TYPE_VALUES = ["new_repair", "with_repair", "no_repair"] as const;
+const BUILDING_STAGE_VALUES = ["built", "under_construction"] as const;
 
 export function PredictionForm({ onSuccess }: PredictionFormProps) {
+    const { t, locale } = useI18n();
+
+    // Create schema with current locale translations
+    const schema = useMemo(() => createPredictionSchema(t), [t, locale]);
+
     const form = useForm<PredictionSchema>({
-        resolver: zodResolver(predictionSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             city: "dushanbe",
             area: 54,
@@ -88,10 +75,10 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                 {/* Header */}
                 <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-                        Параметры квартиры
+                        {t("form.title")}
                     </h2>
                     <p className="text-slate-500 mt-1">
-                        Заполните данные для расчёта стоимости
+                        {t("form.subtitle")}
                     </p>
                 </div>
 
@@ -105,18 +92,18 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-sm font-medium text-slate-700">
-                                        Город
+                                        {t("form.city")}
                                     </FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger className="h-12 text-base">
-                                                <SelectValue placeholder="Выберите город" />
+                                                <SelectValue placeholder={t("form.selectCity")} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {CITIES.map((city) => (
-                                                <SelectItem key={city.value} value={city.value}>
-                                                    {city.label}
+                                            {CITY_VALUES.map((city) => (
+                                                <SelectItem key={city} value={city}>
+                                                    {t(`form.cities.${city}`)}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -134,7 +121,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm font-medium text-slate-700">
-                                            Тип
+                                            {t("form.type")}
                                         </FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
@@ -143,9 +130,9 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {BUILDING_TYPES.map((type) => (
-                                                    <SelectItem key={type.value} value={type.value}>
-                                                        {type.label}
+                                                {BUILDING_TYPE_VALUES.map((type) => (
+                                                    <SelectItem key={type} value={type}>
+                                                        {t(`form.buildingTypes.${type}`)}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -161,7 +148,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm font-medium text-slate-700">
-                                            Стадия
+                                            {t("form.stage")}
                                         </FormLabel>
                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                             <FormControl>
@@ -170,9 +157,9 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                {BUILDING_STAGES.map((stage) => (
-                                                    <SelectItem key={stage.value} value={stage.value}>
-                                                        {stage.label}
+                                                {BUILDING_STAGE_VALUES.map((stage) => (
+                                                    <SelectItem key={stage} value={stage}>
+                                                        {t(`form.buildingStages.${stage}`)}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -191,7 +178,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm font-medium text-slate-700">
-                                            Площадь, м²
+                                            {t("form.area")}
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -212,7 +199,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm font-medium text-slate-700">
-                                            Комнат
+                                            {t("form.rooms")}
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -237,7 +224,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm font-medium text-slate-700">
-                                            Этаж
+                                            {t("form.floor")}
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -258,7 +245,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel className="text-sm font-medium text-slate-700">
-                                            Этажей в доме
+                                            {t("form.totalFloors")}
                                         </FormLabel>
                                         <FormControl>
                                             <Input
@@ -282,7 +269,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-sm font-medium text-slate-700">
-                                        Ремонт
+                                        {t("form.repair")}
                                     </FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
@@ -291,9 +278,9 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {REPAIR_TYPES.map((repair) => (
-                                                <SelectItem key={repair.value} value={repair.value}>
-                                                    {repair.label}
+                                            {REPAIR_TYPE_VALUES.map((repair) => (
+                                                <SelectItem key={repair} value={repair}>
+                                                    {t(`form.repairTypes.${repair}`)}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -318,7 +305,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                             />
                                         </FormControl>
                                         <FormLabel className="text-base font-normal text-slate-700 cursor-pointer">
-                                            Балкон
+                                            {t("form.balcony")}
                                         </FormLabel>
                                     </FormItem>
                                 )}
@@ -337,7 +324,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                                             />
                                         </FormControl>
                                         <FormLabel className="text-base font-normal text-slate-700 cursor-pointer">
-                                            Парковка
+                                            {t("form.parking")}
                                         </FormLabel>
                                     </FormItem>
                                 )}
@@ -350,7 +337,7 @@ export function PredictionForm({ onSuccess }: PredictionFormProps) {
                             className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-800 hover:to-slate-600 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
                             disabled={isPending}
                         >
-                            {isPending ? "Рассчитываем..." : "Рассчитать стоимость"}
+                            {isPending ? t("form.loading") : t("form.submit")}
                         </Button>
 
                         <DisclaimerShort />

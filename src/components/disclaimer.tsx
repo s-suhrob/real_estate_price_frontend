@@ -1,19 +1,17 @@
 "use client";
 
 import { Info } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface DisclaimerProps {
     variant?: "short" | "expanded";
 }
 
-const SHORT_TEXT =
-    "Оценка носит аналитический характер и основана на статистической модели. Фактическая цена сделки может отличаться.";
-
-const EXPANDED_TEXT =
-    "Сервис предоставляет ориентировочную оценку рыночной стоимости на основе данных объявлений и модели машинного обучения. Результат не является отчетом об оценке, не является офертой и не заменяет профессиональную оценку. На итоговую цену влияют состояние объекта, юридические факторы, срочность продажи и условия сделки.";
-
 export function Disclaimer({ variant = "short" }: DisclaimerProps) {
-    const text = variant === "short" ? SHORT_TEXT : EXPANDED_TEXT;
+    const { t } = useI18n();
+    const text = variant === "short"
+        ? t("methodology.short")
+        : t("methodology.expanded");
 
     return (
         <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 rounded-lg p-3">

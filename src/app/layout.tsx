@@ -13,8 +13,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Оценка недвижимости | AI",
-  description: "Узнайте рыночную стоимость квартиры с помощью искусственного интеллекта",
+  title: "Property Valuation | AI",
+  description: "Find out the market value of your apartment using artificial intelligence",
 };
 
 export default function RootLayout({

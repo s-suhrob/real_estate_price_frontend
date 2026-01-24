@@ -6,6 +6,7 @@ import { DisclaimerShort } from "@/components/disclaimer";
 import { LightweightFeedback } from "@/features/feedback/components/LightweightFeedback";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface PriceResultProps {
     prediction: PredictionResponse;
@@ -44,10 +45,11 @@ function useCountUp(target: number, duration: number = 1500): number {
 }
 
 export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
+    const { t, locale } = useI18n();
     const animatedPrice = useCountUp(prediction.price, 1500);
 
     const formatPrice = (price: number) => {
-        return new Intl.NumberFormat("ru-RU", {
+        return new Intl.NumberFormat(locale === "ru" ? "ru-RU" : "en-US", {
             maximumFractionDigits: 0,
         }).format(price);
     };
@@ -60,13 +62,13 @@ export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
 
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <p className="text-slate-500 mb-2">Оценочная стоимость</p>
+                    <p className="text-slate-500 mb-2">{t("result.estimatedPrice")}</p>
                     <h2 className="text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900">
                         {formatPrice(animatedPrice)}
                         <span className="text-2xl md:text-3xl font-semibold text-slate-400 ml-2">TJS</span>
                     </h2>
                     <p className="text-slate-500 mt-3">
-                        {formatPrice(pricePerSqm)} TJS за м²
+                        {t("result.pricePerSqm", { price: formatPrice(pricePerSqm) })}
                     </p>
                 </div>
 
@@ -74,7 +76,7 @@ export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
                 <div className="grid grid-cols-3 gap-3 mb-8">
                     {/* Min Card */}
                     <div className="bg-slate-50 rounded-xl p-4 text-center">
-                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">от</p>
+                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">{t("result.from")}</p>
                         <p className="text-lg md:text-xl font-bold text-slate-700">
                             {formatPrice(prediction.range_low)}
                         </p>
@@ -83,7 +85,7 @@ export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
 
                     {/* Main Price Card */}
                     <div className="bg-slate-900 rounded-xl p-4 text-center transform scale-105 shadow-lg">
-                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">оценка</p>
+                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">{t("result.estimate")}</p>
                         <p className="text-lg md:text-xl font-bold text-white">
                             {formatPrice(prediction.price)}
                         </p>
@@ -92,7 +94,7 @@ export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
 
                     {/* Max Card */}
                     <div className="bg-slate-50 rounded-xl p-4 text-center">
-                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">до</p>
+                        <p className="text-xs text-slate-400 uppercase tracking-wide mb-1">{t("result.to")}</p>
                         <p className="text-lg md:text-xl font-bold text-slate-700">
                             {formatPrice(prediction.range_high)}
                         </p>
@@ -112,7 +114,7 @@ export function PriceResult({ prediction, area, onReset }: PriceResultProps) {
                     className="w-full h-12 text-base font-medium"
                 >
                     <RefreshCw className="w-4 h-4 mr-2" />
-                    Новый расчёт
+                    {t("result.newEstimate")}
                 </Button>
 
                 {/* Feedback */}

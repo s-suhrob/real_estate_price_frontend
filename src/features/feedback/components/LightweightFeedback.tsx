@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useFeedback } from "../hooks/use-feedback";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface LightweightFeedbackProps {
     prediction_id: string;
 }
 
 export function LightweightFeedback({ prediction_id }: LightweightFeedbackProps) {
+    const { t } = useI18n();
     const [feedbackGiven, setFeedbackGiven] = useState<boolean | null>(null);
     const [showComment, setShowComment] = useState(false);
     const [comment, setComment] = useState("");
@@ -43,7 +45,7 @@ export function LightweightFeedback({ prediction_id }: LightweightFeedbackProps)
     if (feedbackGiven !== null && !showComment) {
         return (
             <p className="text-sm text-muted-foreground text-center">
-                Спасибо за отзыв!
+                {t("feedback.thanks")}
             </p>
         );
     }
@@ -52,7 +54,7 @@ export function LightweightFeedback({ prediction_id }: LightweightFeedbackProps)
         <div className="space-y-4">
             {feedbackGiven === null && (
                 <div className="text-center space-y-3">
-                    <p className="text-sm font-medium">Полезна ли оценка?</p>
+                    <p className="text-sm font-medium">{t("feedback.helpful")}</p>
                     <div className="flex justify-center gap-3">
                         <Button
                             variant="outline"
@@ -61,7 +63,7 @@ export function LightweightFeedback({ prediction_id }: LightweightFeedbackProps)
                             disabled={isPending}
                         >
                             <ThumbsUp className="w-4 h-4 mr-2" />
-                            Да
+                            {t("feedback.yes")}
                         </Button>
                         <Button
                             variant="outline"
@@ -70,7 +72,7 @@ export function LightweightFeedback({ prediction_id }: LightweightFeedbackProps)
                             disabled={isPending}
                         >
                             <ThumbsDown className="w-4 h-4 mr-2" />
-                            Нет
+                            {t("feedback.no")}
                         </Button>
                     </div>
                 </div>
@@ -79,7 +81,7 @@ export function LightweightFeedback({ prediction_id }: LightweightFeedbackProps)
             {showComment && (
                 <div className="space-y-3 animate-in slide-in-from-bottom-2 duration-300">
                     <Textarea
-                        placeholder="Хотите добавить комментарий? (необязательно)"
+                        placeholder={t("feedback.commentPlaceholder")}
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
                         className="resize-none text-sm"
@@ -91,14 +93,14 @@ export function LightweightFeedback({ prediction_id }: LightweightFeedbackProps)
                             size="sm"
                             onClick={() => setShowComment(false)}
                         >
-                            Пропустить
+                            {t("feedback.skip")}
                         </Button>
                         <Button
                             size="sm"
                             onClick={handleSubmitComment}
                             disabled={!comment.trim() || isPending}
                         >
-                            Отправить
+                            {t("feedback.submit")}
                         </Button>
                     </div>
                 </div>

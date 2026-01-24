@@ -1,0 +1,114 @@
+{
+    "hero": {
+        "titleLine1": "Property Valuation",
+        "city1": "Tajikistan",
+        "city2": "Dushanbe",
+        "city3": "Khujand",
+        "city4": "Kulob",
+        "city5": "Bokhtar",
+        "subtitle": "AI valuation based on market data",
+        "cta": "Get Estimate"
+    },
+    "nav": {
+        "about": "Calculate Price",
+        "methodology": "Methodology",
+        "faq": "FAQ"
+    },
+    "form": {
+        "title": "Apartment Details",
+        "subtitle": "Fill in the details to calculate the price",
+        "city": "City",
+        "type": "Type",
+        "stage": "Stage",
+        "area": "Area, m²",
+        "rooms": "Rooms",
+        "floor": "Floor",
+        "totalFloors": "Total Floors",
+        "repair": "Condition",
+        "balcony": "Balcony",
+        "parking": "Parking",
+        "submit": "Calculate Price",
+        "loading": "Calculating...",
+        "selectCity": "Select city",
+        "cities": {
+            "dushanbe": "Dushanbe",
+            "khujand": "Khujand",
+            "bokhtar": "Bokhtar",
+            "kulob": "Kulob",
+            "hisor": "Hisor",
+            "vakhdat": "Vakhdat"
+        },
+        "buildingTypes": {
+            "new": "New Building",
+            "secondhand": "Resale"
+        },
+        "repairTypes": {
+            "new_repair": "Euro Renovation",
+            "with_repair": "Cosmetic",
+            "no_repair": "No Renovation"
+        },
+        "buildingStages": {
+            "built": "Completed",
+            "under_construction": "Under Construction"
+        },
+        "validation": {
+            "areaMin": "Minimum area is 8 m²",
+            "areaMax": "Maximum area is 500 m²",
+            "floorMin": "Minimum floor is 1",
+            "floorMax": "Maximum floor is 30",
+            "roomsMin": "Minimum is 1 room",
+            "roomsMax": "Maximum is 10 rooms",
+            "floorsMin": "Minimum is 1 floor",
+            "floorsMax": "Maximum is 50 floors",
+            "yearMin": "Minimum year is 1950",
+            "yearMax": "Maximum year is 2030",
+            "floorExceedsTotal": "Floor cannot exceed total floors"
+        }
+    },
+    "result": {
+        "title": "Valuation Result",
+        "estimatedPrice": "Estimated Price",
+        "pricePerSqm": "{price} TJS per m²",
+        "from": "from",
+        "estimate": "estimate",
+        "to": "to",
+        "newEstimate": "New Calculation"
+    },
+    "features": {
+        "trends": {
+            "title": "Market Trends",
+            "description": "Track price changes in the market."
+        },
+        "districts": {
+            "title": "District Analysis",
+            "description": "Compare districts by price and dynamics."
+        },
+        "range": {
+            "title": "Price Range",
+            "description": "We show price range for better understanding."
+        },
+        "data": {
+            "title": "Market Data",
+            "description": "We use listing data and remove duplicates."
+        }
+    },
+    "methodology": {
+        "title": "Methodology",
+        "short": "This valuation is analytical and based on a statistical model. The actual transaction price may differ.",
+        "expanded": "The service provides an indicative market value estimate based on listing data and a machine learning model. The result is not an appraisal report, is not an offer, and does not replace professional valuation. The final price is affected by the condition of the property, legal factors, urgency of sale, and transaction terms."
+    },
+    "footer": {
+        "copyright": "© {year} Property Valuation",
+        "methodology": "Methodology"
+    },
+    "feedback": {
+        "title": "Feedback",
+        "helpful": "Was the estimate helpful?",
+        "yes": "Yes",
+        "no": "No",
+        "thanks": "Thank you for your feedback!",
+        "commentPlaceholder": "Would you like to add a comment? (optional)",
+        "skip": "Skip",
+        "submit": "Submit"
+    }
+}
